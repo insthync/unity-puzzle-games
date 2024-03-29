@@ -1,0 +1,48 @@
+Change log 
+- It's a split version of 5 in 1 Puzzle RPG Starter Kit (https://www.assetstore.unity3d.com/en/#!/content/20420)
+- Fixed bugs
+- Performance improvement
+- Facebook fan page content updated
+
+v.1.3.2
+-	Performance improvement
+
+BoardControllerBase
+-	Add “Is Init On Awake” which allow developer choice to initialize a game
+
+Bugifx
+-	Fix drag and drop puzzle game bugs
+
+v.1.3
+Node
+-	Add “Killed Effect” which instantiating while destroy
+
+
+Demo
+-	Add Simple Scoring game demo
+
+
+Bugfix
+-	Fix line link bugs
+
+v.1.1
+Character
+-	Move skill_turn_length to “CharacterSkill” component
+-	Change “Hp Bar” field from SpriteRenderer to UISimpleBar
+-	Add “Icon” field that can be use as actor which show in a scene and inventory management
+-	Add “Portrait” field that can be use as actor which show in a scene
+-	Add “Skill Index” field
+-	Add “Current Skill Level” field
+
+
+
+GameManager
+-	Change “Hp Bar” field from SpriteRenderer to UISimpleBar
+-	Change “Time Bar” field from SpriteRenderer to UISimpleBar
+-	Add “Max Member Quantity” field which use for define limit team member
+-	Add “Is Init Character By Id” field, if this is true character initialization by character ids.
+-	Add “Character_ids” field, an player’s characters ids 
+-	Add “Character Container” field, a transform which being contains player’s characters
+-	Add “Enemy Character Container” field, a transform which being contains enemy’s characters
+-	Add “Character Positions” field, an local positions inside “Character Container”, an characters which is same index in array with this will set position following this value of same index
+-	Add “Enemy Character Positions” field, an local positions inside “Enemy Container”, an characters which is same index in array with this will set position following this value of same index
