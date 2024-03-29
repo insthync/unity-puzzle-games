@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class AttackAction_Demo : CharacterAction {
 	public Missile missilePrefab;
@@ -24,7 +25,7 @@ public class AttackAction_Demo : CharacterAction {
 				}
 			}
 		} else {
-			iTween.PunchScale(owner.gameObject, owner.transform.localScale * 1.05f, 1);
+			transform.DOPunchScale(owner.transform.localScale * 1.05f, 1f);
 		}
 		base.DoAction(owner, targets);
 	}

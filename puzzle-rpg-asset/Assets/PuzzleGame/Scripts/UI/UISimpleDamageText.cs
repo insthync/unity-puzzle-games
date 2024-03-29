@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
-public class UISimpleDamageText : UISimpleLabel {
+public class UISimpleDamageText : UISimpleLabel
+{
 	public float time = 1f;
 	public float fadeOutTime = 1;
 	public float delay;
@@ -9,38 +11,58 @@ public class UISimpleDamageText : UISimpleLabel {
 	public float scaleUp;
 	public int damage;
 	private bool isSetTween = false;
-	protected override void Update ()
+	private float _currentFontSize;
+	private float _currentDamage;
+	private float _currentFade;
+
+	protected override void Update()
 	{
-		base.Update ();
+		base.Update();
 		if (!isSetTween)
 		{
-			iTween.MoveTo(gameObject, iTween.Hash("position", transform.localPosition + moveUpOffset, "islocal", true, "delay", delay, "time", time));
-			iTween.ValueTo(gameObject, iTween.Hash("from", fontSize, "to", fontSize * scaleUp, "onupdate", "OnUpdateSizeValue", "delay", delay, "time", time));
-			iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", damage, "onupdate", "OnUpdateDamageValue", "delay", delay, "time", time));
-			iTween.ValueTo(gameObject, iTween.Hash("from", 1f, "to", 0f, "onupdate", "OnUpdateFadeValue", "delay", delay + time, "time", fadeOutTime));
+			transform.DOLocalMove(transform.localPosition + moveUpOffset, time).SetDelay(delay);
+			_currentFontSize = fontSize;
+			DOTween.To(GetSizeValue, OnUpdateSizeValue, fontSize * scaleUp, time).SetDelay(delay);
+			_currentDamage = 0;
+			DOTween.To(GetDamageValue, OnUpdateDamageValue, damage, time).SetDelay(delay);
+			_currentFade = 1f;
+			DOTween.To(GetFadeValue, OnUpdateFadeValue, 0f, fadeOutTime).SetDelay(delay + time);
 			StartCoroutine(DestoryOnEnd());
 			isSetTween = true;
 		}
 	}
 
-	private void OnUpdateSizeValue(int value)
+	private float GetSizeValue()
 	{
-		fontSize = value;
+		return _currentFontSize;
 	}
-	
-	private void OnUpdateDamageValue(int value)
+
+	private void OnUpdateSizeValue(float value)
 	{
-		if (value > 0)
-		{
-			SetText("" + value);
-		} else {
-			SetText("");
-		}
+		_currentFontSize = value;
+		fontSize = Mathf.CeilToInt(_currentFontSize);
+	}
+
+	private float GetDamageValue()
+	{
+		return _currentDamage;
+	}
+
+	private void OnUpdateDamageValue(float value)
+	{
+		_currentDamage = value;
+		SetText(_currentDamage.ToString("N0"));
+	}
+
+	private float GetFadeValue()
+	{
+		return _currentFade;
 	}
 
 	private void OnUpdateFadeValue(float value)
 	{
-		textColor = new Color(textColor.r, textColor.g, textColor.b, value);
+		_currentFade = value;
+		textColor = new Color(textColor.r, textColor.g, textColor.b, _currentFade);
 	}
 
 	private IEnumerator DestoryOnEnd()

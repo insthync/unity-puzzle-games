@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class Node : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class Node : MonoBehaviour
     public float moveDuration { get; private set; }
     private Vector2 moveTarget = Vector2.zero;
     private float moveSpeed = 0;
+    private Tweener _tweener;
+
     protected virtual void Awake()
     {
         isChecked = false;
@@ -49,7 +52,7 @@ public class Node : MonoBehaviour
 
         Vector2 validatePosition = CalculatePositionInBoard();
         Vector2 currentPosition = transform.localPosition;
-        if (iTween.Count(gameObject) == 0 &&
+        if (_tweener == null &&
             !validatePosition.Equals(currentPosition) &&
             (boardController.selectedNode == null || boardController.selectedNode != this))
         {
@@ -85,7 +88,8 @@ public class Node : MonoBehaviour
 
         if (moveTargetPrepared)
         {
-            iTween.MoveTo(gameObject, iTween.Hash("x", moveTarget.x, "y", moveTarget.y, "islocal", true, "speed", moveSpeed, "oncomplete", "OnMovedToTarget"));
+            _tweener = transform.DOLocalMove(moveTarget, moveSpeed * Time.fixedDeltaTime);
+            _tweener.onComplete = OnMovedToTarget;
             isMoving = true;
             moveTargetPrepared = false;
         }
@@ -125,7 +129,7 @@ public class Node : MonoBehaviour
         died = true;
         try
         {
-            iTween.Stop(gameObject);
+            _tweener?.Kill();
         }
         catch
         {

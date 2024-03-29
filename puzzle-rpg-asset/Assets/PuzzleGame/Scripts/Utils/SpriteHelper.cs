@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 [RequireComponent (typeof (SpriteRenderer))]
 public class SpriteHelper : MonoBehaviour
@@ -37,9 +38,10 @@ public class SpriteHelper : MonoBehaviour
 	private float _secondsPerFrame;
 	private float _duration;
 	private float _totalDuration;
+	private Tweener _tweener;
 
-	// Events
-	public System.Action<SpriteHelper> onMovedToTarget;
+    // Events
+    public System.Action<SpriteHelper> onMovedToTarget;
 	public System.Action<SpriteHelper, int> onAnimatingFrame;
 	public System.Action<SpriteHelper> onAnimationFinish;
 
@@ -198,36 +200,28 @@ public class SpriteHelper : MonoBehaviour
 		}
 	}
 
-	public void MoveTo(Vector2 pos, float moveSpeed, System.Action<SpriteHelper> onMovedToTarget = null, iTween.EaseType easeType = iTween.EaseType.linear) {
+	public void MoveTo(Vector2 pos, float moveSpeed, System.Action<SpriteHelper> onMovedToTarget = null, Ease easeType = Ease.Linear) {
 		if (isMoving)
 		{
 			return;
 		}
 		this.onMovedToTarget = onMovedToTarget;
-		iTween.StopByName (iTweenMoveName);
+		_tweener?.Kill();
 		float diff_x = pos.x - position.x;
 		float diff_y = pos.y - position.y;
 		float distance = Mathf.Sqrt((diff_x * diff_x) + (diff_y * diff_y));
 		float duration = distance / (moveSpeed * scale);
 		
-		Hashtable tweenAttr = new Hashtable();
-		tweenAttr.Add("name", iTweenMoveName);
-		tweenAttr.Add("easetype", easeType);
-		tweenAttr.Add("x", pos.x);
-		tweenAttr.Add("y", pos.y);
-		tweenAttr.Add("z", depth + pd(pos.x, pos.y));
-		tweenAttr.Add("time", duration);
-		tweenAttr.Add("oncomplete", "OnMovedToTarget");
-		tweenAttr.Add("islocal", true);
-		iTween.MoveTo(gameObject, tweenAttr);
+        _tweener = transform.DOLocalMove(new Vector3(pos.x, pos.y, depth + pd(pos.x, pos.y)), duration);
+        _tweener.onComplete = OnMovedToTarget;
 		isMoving = true;
 	}
 	
 	public void StopMove()
 	{
 		isMoving = false;
-		iTween.StopByName(gameObject, iTweenMoveName);
-	}
+		_tweener?.Kill();
+    }
 	
 	protected void OnMovedToTarget()
 	{

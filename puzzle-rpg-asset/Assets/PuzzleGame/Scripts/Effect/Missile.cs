@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class Missile : MonoBehaviour {
 	public Vector3 targetOffset;
 	public Transform target;
 	public float time = 0.25f;
-	public iTween.EaseType easeType = iTween.EaseType.easeInBack;
+	public Ease easeType = Ease.InBack;
 	public System.Action onShot = null;
 
 	public void Shoot()
 	{
 		Vector3 targetPosition = target.position + targetOffset;
-		iTween.MoveTo(gameObject, iTween.Hash("x", targetPosition.x, "y", targetPosition.y, "z", targetPosition.z, "looktarget", target, "islocal", false, "oncomplete", "Shot", "time", time, "easetype", easeType));
+		transform.DOMove(targetPosition, time).SetEase(easeType).onComplete = Shot;
 	}
 
 	public void Shot()
