@@ -88,7 +88,7 @@ public class Node : MonoBehaviour
 
         if (moveTargetPrepared)
         {
-            _tweener = transform.DOLocalMove(moveTarget, moveSpeed * Time.fixedDeltaTime);
+            _tweener = transform.DOLocalMove(moveTarget, moveDuration);
             _tweener.onComplete = OnMovedToTarget;
             isMoving = true;
             moveTargetPrepared = false;
